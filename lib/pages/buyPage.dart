@@ -14,8 +14,8 @@ class BuyPage extends StatefulWidget {
 }
 
 class _BuyPageState extends State<BuyPage> {
-  final List sizes = [1, 2, 3, 4, 5, 6, 7];
-  final List<int> colors = [0xFFF03B3B, 0xFF222222, 0xFFE9B424];
+  final List sizes = [1, 2, 3, 4, 5, 6, 7,8,9];
+  final List<int> colors = [0xFFF03B3B, 0xFF222222, 0xFFE9B424,0xFFF13B3B, 0xFF322222, 0xFFE9B524];
   String selectedSize = '';
   int selectedColor = 0;
   int quantity = 0;
@@ -70,7 +70,7 @@ class _BuyPageState extends State<BuyPage> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: EdgeInsets.only(top: 8, bottom: 16),
                   child: Text(
                     'NRP 12,000',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
@@ -121,7 +121,7 @@ class _BuyPageState extends State<BuyPage> {
                       child: Wrap(
                         children: sizes
                             .map((size) => Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
+                                  padding: const EdgeInsets.only(left: 16.0,top: 9 ),
                                   child: GestureDetector(
                                     onTap: () => {
                                       setState(() {
@@ -173,29 +173,30 @@ class _BuyPageState extends State<BuyPage> {
                         children: colors
                             .map((color) => Padding(
                                   padding: const EdgeInsets.only(left: 16.0),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GestureDetector(
-                                      onTap: () => {
-                                        setState(() {
-                                          selectedColor = color;
-                                        })
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: selectedColor == color
-                                                    ? const Color(0xFF006FFD)
-                                                    : const Color(0xFFE8E9F1)),
-                                            borderRadius:
-                                                BorderRadius.circular(6)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            height: 17,
-                                            width: 17,
+                                  child: GestureDetector(
+                                    onTap: () => {
+                                      setState(() {
+                                        selectedColor = color;
+                                      })
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: selectedColor == color
+                                                  ? const Color(0xFF006FFD)
+                                                  : const Color(0xFFE8E9F1)),
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          height: 17,
+                                          width: 17,
+                                          decoration: BoxDecoration(
                                             color: Color(color),
+                                            borderRadius: BorderRadius.circular(6)
                                           ),
+                                          
                                         ),
                                       ),
                                     ),
@@ -217,7 +218,7 @@ class _BuyPageState extends State<BuyPage> {
                   child: Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
+                        padding: const EdgeInsets.only(left: 8.0),
                         child: IconButton(
                             onPressed: () {
                               setState(() {
@@ -231,22 +232,25 @@ class _BuyPageState extends State<BuyPage> {
                             )),
                       ),
                       Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: quantityController,
-                          onChanged: (value) {
-                            quantity = int.parse(value);
-                          },
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFE8E9F1)),
-                                borderRadius: BorderRadius.circular(49.11)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFE8E9F1)),
-                                borderRadius: BorderRadius.circular(49.11)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: quantityController,
+                            onChanged: (value) {
+                              quantity = int.parse(value);
+                            },
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Color(0xFFE8E9F1)),
+                                  borderRadius: BorderRadius.circular(49.11)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Color(0xFFE8E9F1)),
+                                  borderRadius: BorderRadius.circular(49.11)),
+                            ),
                           ),
                         ),
                       ),

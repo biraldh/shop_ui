@@ -1,9 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shop_ui/pages/widgets/itemWidget.dart';
 
-class BottomSheetWidget extends StatelessWidget {
-  int quantity;
-  BottomSheetWidget({super.key, required this.quantity});
+class BottomSheetWidget extends StatefulWidget {
+  final int quantity;
+
+  const BottomSheetWidget({super.key, required this.quantity});
+
+  @override
+  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
+}
+
+class _BottomSheetWidgetState extends State<BottomSheetWidget> {
+  List itemIndex = [1,2,3,4];
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +23,7 @@ class BottomSheetWidget extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 16),
             child: Row(
               mainAxisAlignment:
               MainAxisAlignment.spaceBetween,
@@ -21,13 +32,13 @@ class BottomSheetWidget extends StatelessWidget {
                   children: [
                     IconButton(
                         onPressed: () {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons
                               .keyboard_arrow_down_rounded,
                           color: Color(0xFF006FFD),
                           size: 32,
                         )),
-                    Text(
+                    const Text(
                       'Summary',
                       style: TextStyle(
                           fontSize: 18,
@@ -38,20 +49,19 @@ class BottomSheetWidget extends StatelessWidget {
                           left: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Color(0xFF006FFD),
+                            color: const Color(0xFF006FFD),
                             borderRadius:
                             BorderRadius.circular(
                                 20)),
                         child: Padding(
                           padding:
-                          const EdgeInsets.only(
-                              top: 3.0,
-                              bottom: 3.0,
-                              left: 5.5,
-                              right: 5.5),
+                          const EdgeInsets.symmetric(
+                            horizontal: 5.5,
+                            vertical: 3.0
+                          ),
                           child: Text(
-                            quantity.toString(),
-                            style: TextStyle(
+                            widget.quantity.toString(),
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10),
                           ),
@@ -64,7 +74,7 @@ class BottomSheetWidget extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: Color(0xFF1F2024),
                       size: 32,
@@ -72,81 +82,108 @@ class BottomSheetWidget extends StatelessWidget {
               ],
             ),
           ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: itemIndex.length,
+              itemBuilder: (context,index){
+                return ItemWidget(itemIndex: itemIndex[index], deleteItem: () {
+                  setState(() {
+                    itemIndex.removeAt(index);
+                  });
+                },);
+            }),
+          ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
               decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFFE86339)),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE8E9F1)),
+                color: const Color(0xFFFFEFE7),
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    //image
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16),
-                      child: Container(
-                        height: 43,
-                        width: 43,
-                        decoration: BoxDecoration(
-                            color: Colors.blue
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('Order Summary', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Total Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Text('Discount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top:8.0),
+                              child: Text('VAT', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text('Net Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    //texts
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //name and quantity
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Padding(
+                          padding: EdgeInsets.only(right: 16.0),
+                          child: Column(
                             children: [
-                              Text('Nike Kyrie 3 -OG Black',
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                              Text('40,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                              Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Text('1,500', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: Text('x$quantity', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
+                                padding: EdgeInsets.only(top:8.0),
+                                child: Text('3,500', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text('42,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),),
                               )
                             ],
                           ),
-                          Text('NRP 24,000',
-                            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
-                          ),
-                          Row(
-                            children: [
-                              IconButton(onPressed: (){},
-                                  icon: Icon(Icons.remove, color: Color(0xFF006FFD),)
-                              ),
-                              Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                      border: Border.all(color: Color(0xFFE8E9F1))
-                                  ),
-                                  width: 45,
-                                  height: 32,
-                                  child: Center(child: Text('2'))
-                              ),
-                              IconButton(onPressed: (){},
-                                  icon: Icon(Icons.add, color: Color(0xFF006FFD),)
-                              ),
-
-                            ],
-                          )
-                        ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16),
+            child: GestureDetector(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF006FFD),
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 11.0),
+                          child: Center(child: Text('Next', style: TextStyle(fontSize: 14, color: Colors.white,fontWeight: FontWeight.w600),)),
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           )
         ],
       ),
-    );;
+    );
   }
 }
