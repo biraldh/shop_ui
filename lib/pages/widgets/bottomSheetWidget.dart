@@ -1,20 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shop_ui/pages/widgets/itemWidget.dart';
 
-class BottomSheetWidget extends StatefulWidget {
-  final int quantity;
+import '../../item_provider/item_provider_notifier.dart';
 
-  const BottomSheetWidget({super.key, required this.quantity});
+class BottomSheetWidget extends ConsumerStatefulWidget {
+  const BottomSheetWidget({super.key});
 
   @override
-  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
+  ConsumerState<BottomSheetWidget> createState() => _BottomSheetWidgetState();
 }
 
-class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  List itemIndex = [1,2,3,4];
+class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,47 +21,36 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
                     IconButton(
                         onPressed: () {},
                         icon: const Icon(
-                          Icons
-                              .keyboard_arrow_down_rounded,
+                          Icons.keyboard_arrow_down_rounded,
                           color: Color(0xFF006FFD),
                           size: 32,
                         )),
                     const Text(
                       'Summary',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8.0),
+                      padding: const EdgeInsets.only(left: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
                             color: const Color(0xFF006FFD),
-                            borderRadius:
-                            BorderRadius.circular(
-                                20)),
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 5.5,
-                            vertical: 3.0
-                          ),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5.5, vertical: 3.0),
                           child: Text(
-                            widget.quantity.toString(),
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10),
+                            '1',
+                            style: TextStyle(color: Colors.white, fontSize: 10),
                           ),
                         ),
                       ),
@@ -83,15 +70,22 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: itemIndex.length,
-              itemBuilder: (context,index){
-                return ItemWidget(itemIndex: itemIndex[index], deleteItem: () {
-                  setState(() {
-                    itemIndex.removeAt(index);
-                  });
-                },);
-            }),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final items = ref.watch(itemProviderProvider);
+                return ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return ItemWidget(
+                        itemIndex: int.parse(item.id),
+                        deleteItem: () {
+                          ref.read(itemProviderProvider.notifier).removeItem(item.id);
+                        },
+                      );
+                    });
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -106,7 +100,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text('Order Summary', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
+                    child: Text(
+                      'Order Summary',
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 16.0),
@@ -116,18 +114,34 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Total Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
-                            Padding(
-                              padding: EdgeInsets.only(top: 8.0),
-                              child: Text('Discount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                            Text(
+                              'Total Amount',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top:8.0),
-                              child: Text('VAT', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'Discount',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'VAT',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text('Net Amount', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),),
+                              child: Text(
+                                'Net Amount',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w800),
+                              ),
                             ),
                           ],
                         ),
@@ -135,18 +149,37 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           padding: EdgeInsets.only(right: 16.0),
                           child: Column(
                             children: [
-                              Text('40,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
-                              Padding(
-                                padding: EdgeInsets.only(top: 8.0),
-                                child: Text('1,500', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                              Text(
+                                '40,000',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top:8.0),
-                                child: Text('3,500', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  '1,500',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  '3,500',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text('42,000', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),),
+                                child: Text(
+                                  '42,000',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800),
+                                ),
                               )
                             ],
                           ),
@@ -165,15 +198,21 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top:8.0),
+                      padding: const EdgeInsets.only(top: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF006FFD),
-                          borderRadius: BorderRadius.circular(12)
-                        ),
+                            color: const Color(0xFF006FFD),
+                            borderRadius: BorderRadius.circular(12)),
                         child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 11.0),
-                          child: Center(child: Text('Next', style: TextStyle(fontSize: 14, color: Colors.white,fontWeight: FontWeight.w600),)),
+                          child: Center(
+                              child: Text(
+                            'Next',
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          )),
                         ),
                       ),
                     ),

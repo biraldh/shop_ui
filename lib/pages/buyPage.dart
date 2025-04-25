@@ -4,22 +4,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shop_ui/pages/widgets/bottomSheetWidget.dart';
 
-class BuyPage extends StatefulWidget {
+import '../provider.dart';
+
+class BuyPage extends ConsumerStatefulWidget {
   const BuyPage({super.key});
 
   @override
-  State<BuyPage> createState() => _BuyPageState();
+  ConsumerState<BuyPage> createState() => _BuyPageState();
 }
 
-class _BuyPageState extends State<BuyPage> {
-  final List sizes = [1, 2, 3, 4, 5, 6, 7,8,9];
-  final List<int> colors = [0xFFF03B3B, 0xFF222222, 0xFFE9B424,0xFFF13B3B, 0xFF322222, 0xFFE9B524];
+class _BuyPageState extends ConsumerState<BuyPage> {
+  final List sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  final List<int> colors = [
+    0xFFF03B3B,
+    0xFF222222,
+    0xFFE9B424,
+    0xFFF13B3B,
+    0xFF322222,
+    0xFFE9B524
+  ];
   String selectedSize = '';
   int selectedColor = 0;
-  int quantity = 0;
-  final TextEditingController quantityController = TextEditingController()
+
+  //int quantity = 0;
+  late TextEditingController quantityController = TextEditingController()
     ..text = '0';
 
   @override
@@ -121,7 +132,8 @@ class _BuyPageState extends State<BuyPage> {
                       child: Wrap(
                         children: sizes
                             .map((size) => Padding(
-                                  padding: const EdgeInsets.only(left: 16.0,top: 9 ),
+                                  padding:
+                                      const EdgeInsets.only(left: 16.0, top: 9),
                                   child: GestureDetector(
                                     onTap: () => {
                                       setState(() {
@@ -193,10 +205,9 @@ class _BuyPageState extends State<BuyPage> {
                                           height: 17,
                                           width: 17,
                                           decoration: BoxDecoration(
-                                            color: Color(color),
-                                            borderRadius: BorderRadius.circular(6)
-                                          ),
-                                          
+                                              color: Color(color),
+                                              borderRadius:
+                                                  BorderRadius.circular(6)),
                                         ),
                                       ),
                                     ),
@@ -221,56 +232,61 @@ class _BuyPageState extends State<BuyPage> {
                         padding: const EdgeInsets.only(left: 8.0),
                         child: IconButton(
                             onPressed: () {
-                              setState(() {
-                                quantity--;
-                                quantityController.text = quantity.toString();
-                              });
+                              ref.watch(quantityProvider.notifier).state--;
+                              quantityController.text = ref.read(quantityProvider.notifier).state.toString();
                             },
                             icon: const Icon(
                               Icons.remove,
                               color: Color(0xFF006FFD),
                             )),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            controller: quantityController,
-                            onChanged: (value) {
-                              quantity = int.parse(value);
-                            },
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Color(0xFFE8E9F1)),
-                                  borderRadius: BorderRadius.circular(49.11)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Color(0xFFE8E9F1)),
-                                  borderRadius: BorderRadius.circular(49.11)),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                controller: quantityController,
+                                onChanged: (value) {
+                                  ref.watch(quantityProvider.notifier).state = int.parse(value);
+                                },
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Color(0xFFE8E9F1)),
+                                      borderRadius:
+                                          BorderRadius.circular(49.11)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Color(0xFFE8E9F1)),
+                                      borderRadius:
+                                          BorderRadius.circular(49.11)),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: IconButton(
-                            onPressed: () {
-                              quantity++;
-                              quantityController.text = quantity.toString();
-                            },
-                            icon: const Icon(
-                              Icons.add,
-                              color: Color(0xFF006FFD),
-                            )),
+                          onPressed: (){
+                            ref.watch(quantityProvider.notifier).state++;
+                            quantityController.text = ref.read(quantityProvider.notifier).state.toString();
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Color(0xFF006FFD),
+                          )),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 24.0, bottom: 12),
+                  padding: const EdgeInsets.only(top: 24.0, bottom: 12),
                   child: GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
@@ -282,7 +298,7 @@ class _BuyPageState extends State<BuyPage> {
                           context: context,
                           builder: (BuildContext context) {
                             // return SizedBox(
-                            return BottomSheetWidget(quantity: quantity,);
+                            return const BottomSheetWidget();
                           });
                     },
                     child: SizedBox(
