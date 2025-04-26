@@ -1,11 +1,8 @@
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../item_provider/item_provider_notifier.dart';
-import '../../provider.dart';
 
 class ItemWidget extends ConsumerStatefulWidget {
   final VoidCallback deleteItem;
@@ -76,11 +73,11 @@ class _ItemWidgetState extends ConsumerState<ItemWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //name and quantity
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Nike Kyrie 3 -OG Black ${widget.itemIndex}',
+                            'Nike Kyrie 3 -OG Black',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w600),
                           ),
@@ -112,7 +109,8 @@ class _ItemWidgetState extends ConsumerState<ItemWidget> {
                           Consumer(
                             builder: (context, ref, child) {
                               final items = ref.watch(itemProviderProvider);
-                              final item = items.firstWhere((it) => int.parse(it.id) == widget.itemIndex);
+                              final list = items.items;
+                              final item = list.firstWhere((it) => int.parse(it.id) == widget.itemIndex);
                               return Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),

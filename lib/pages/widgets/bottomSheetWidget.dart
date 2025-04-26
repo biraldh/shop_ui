@@ -74,9 +74,9 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
               builder: (context, ref, child) {
                 final items = ref.watch(itemProviderProvider);
                 return ListView.builder(
-                    itemCount: items.length,
+                    itemCount: items.items.length,
                     itemBuilder: (context, index) {
-                      final item = items[index];
+                      final item = items.items[index];
                       return ItemWidget(
                         itemIndex: int.parse(item.id),
                         deleteItem: () {
